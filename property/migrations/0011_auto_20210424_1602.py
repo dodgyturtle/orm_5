@@ -16,8 +16,8 @@ def relocate_from_flat_to_owner(apps, schema_editor):
 
 
 def move_backward(apps, schema_editor):
-    Flat = apps.get_model("property", "Owner")
-    Owners.objects.all().delete()
+    Owner = apps.get_model("property", "Owner")
+    Owner.objects.all().delete()
 
 
 class Migration(migrations.Migration):
