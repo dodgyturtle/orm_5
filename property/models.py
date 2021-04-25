@@ -5,7 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Flat(models.Model):
-    owner = models.CharField("ФИО владельца", max_length=200)
+    owner = models.CharField("ФИО владельца", max_length=200, db_index=True)
     owners_phonenumber = models.CharField("Номер владельца", max_length=20)
     owner_pure_phone = PhoneNumberField(null=True, blank=True)
     created_at = models.DateTimeField(
@@ -44,7 +44,6 @@ class Flat(models.Model):
     new_building = models.NullBooleanField("Новостройка")
     liked_by = models.ManyToManyField(User, related_name="liked_flats")
 
-
     def __str__(self):
         return f"{self.town}, {self.address} ({self.price}р.)"
 
@@ -61,8 +60,17 @@ class Complaint(models.Model):
     def __str__(self):
         return f"{self.сomplaining_user.username}, {self.flat.address}"
 
+
 class Owner(models.Model):
-    full_name = models.CharField("ФИО владельца", max_length=200)
+    full_name = models.CharField("ФИО владельца", max_length=200, db_index=True)
     owners_phonenumber = models.CharField("Номер владельца", max_length=20)
-    owner_pure_phone = PhoneNumberField("Нормализованный номер владельца", null=True, blank=True)
+    owner_pure_phone = PhoneNumberField(
+        "Нормализованный номер владельца", null=True, blank=True
+    )
     flats = models.ManyToManyField(Flat, related_name="flat_owners")
+
+    def __str__(self):
+        return f"{self.full_name}, {self.owner_pure_phone}"
+
+    def get_owner_flats(self):
+        return "\n".join([flat.address for flat in self.flats.all()])
