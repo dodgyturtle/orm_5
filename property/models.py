@@ -38,7 +38,7 @@ class Flat(models.Model):
     construction_year = models.IntegerField(
         "Год постройки здания", null=True, blank=True, db_index=True
     )
-    new_building = models.NullBooleanField("Новостройка")
+    new_building = models.NullBooleanField("Новостройка", db_index=True)
     liked_by = models.ManyToManyField(User, related_name="liked_flats", blank=True)
 
     def __str__(self):
@@ -53,8 +53,8 @@ class Complaint(models.Model):
         related_name="complaints",
     )
     flat = models.ForeignKey(
-        Flat, 
-        on_delete=models.CASCADE, 
+        Flat,
+        on_delete=models.CASCADE,
         verbose_name="Квартира, на которую жаловались:",
         related_name="complaints",
     )
