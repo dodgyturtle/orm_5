@@ -6,16 +6,15 @@ from django.db import migrations
 def update_field_new_building(apps, schema_editor):
     Flat = apps.get_model("property", "Flat")
     new_building_flats = Flat.objects.filter(construction_year__gte="2015")
-    for new_building_flat in new_building_flats:
-        new_building_flat.new_building = True
-        new_building_flat.save()
+    new_building_flats.update(new_building=True)
+    old_building_flats = Flat.objects.filter(construction_year__lte="2014")
+    old_building_flats.update(new_building=False)
+
 
 def move_backward(apps, schema_editor):
     Flat = apps.get_model("property", "Flat")
-    new_building_flats = Flat.objects.filter(new_building=True)
-    for new_building_flat in new_building_flats:
-        new_building_flat.new_building = None
-        new_building_flat.save()
+    flats = Flat.objects.all()
+    flats.update(new_building=None)
 
 
 class Migration(migrations.Migration):
